@@ -1,0 +1,79 @@
+/* Basic styling for the popup body */
+body {
+  width: 250px; /* Set a fixed width for the popup */
+  padding: 15px; /* Add padding around the content */
+  font-family: 'Roboto', sans-serif; /* Use Roboto font */
+  /* White background with 90% opacity for translucency */
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #000; /* Default text color is black */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border-radius: 8px; /* Rounded corners for the popup box */
+  border: 1px solid rgba(200, 200, 200, 0.5); /* Subtle border for definition */
+  display: flex; /* Use flexbox to arrange content vertically */
+  flex-direction: column;
+}
+
+/* Styling for the main title */
+h1 {
+  font-size: 18px;
+  margin-bottom: 20px; /* Space below the title */
+  color: #000; /* Title color is black */
+  text-align: center; /* Center the title */
+}
+
+/* Container for each individual setting row (label + toggle) */
+.setting-item {
+  display: flex; /* Use flexbox to arrange label and toggle horizontally */
+  align-items: center; /* Vertically align items in the row */
+  justify-content: space-between; /* Distribute space between label and toggle */
+  margin-bottom: 15px; /* Space between setting items */
+}
+
+/* Styling for the setting labels */
+.setting-item label {
+  font-size: 14px;
+  color: #333; /* Dark grey color for labels */
+  flex-grow: 1; /* Allow the label to take up available space */
+  margin-right: 10px; /* Space between label and the toggle */
+  cursor: pointer; /* Indicate that the label is clickable */
+}
+
+/* Hide the default browser checkbox */
+.toggle-switch {
+  display: none;
+}
+
+/* Styling for the visual toggle indicator (the "track" of the switch) */
+.toggle-indicator {
+  position: relative; /* Needed for positioning the thumb (::before) */
+  display: inline-block;
+  width: 40px; /* Width of the toggle track */
+  height: 20px; /* Height of the toggle track */
+  background-color: #ccc; /* Grey color when toggle is off */
+  border-radius: 20px; /* Make the track rounded */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+  cursor: pointer; /* Indicate it's interactive */
+}
+
+/* Styling for the toggle thumb (the "circle" that slides) */
+.toggle-indicator::before {
+  content: ''; /* Required for pseudo-elements */
+  position: absolute; /* Position relative to the toggle-indicator */
+  top: 2px; /* Position the thumb inside the track */
+  left: 2px; /* Position the thumb inside the track */
+  width: 16px; /* Width of the thumb */
+  height: 16px; /* Height of the thumb */
+  background-color: #fff; /* White color for the thumb */
+  border-radius: 50%; /* Make the thumb circular */
+  transition: transform 0.3s ease; /* Smooth sliding effect for the thumb */
+}
+
+/* Style when the associated checkbox is checked (toggle is ON) */
+.toggle-switch:checked + .toggle-indicator {
+  background-color: #10b981; /* Green color when toggle is on */
+}
+
+/* Move the thumb to the right when the toggle is ON */
+.toggle-switch:checked + .toggle-indicator::before {
+  transform: translateX(20px); /* Move thumb to the right by 20px */
+}
