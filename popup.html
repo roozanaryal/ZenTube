@@ -12,28 +12,45 @@
     <h1>ZenTube Settings</h1>
 
     <div class="setting-item">
-      <label for="hideHomepageFeed">Hide Homepage Feed</label>
-      <input type="checkbox" id="hideHomepageFeed" class="toggle-switch" aria-label="Hide YouTube Homepage Feed">
-      <span class="toggle-indicator"></span>
+      <label class="setting-text">Hide Homepage Feed</label>
+      <label class="toggle-wrapper">
+        <input type="checkbox" id="hideHomepageFeed" class="toggle-switch" aria-label="Hide YouTube Homepage Feed">
+        <span class="toggle-indicator"></span>
+      </label>
     </div>
 
     <div class="setting-item">
-      <label for="hideRecommendedVideos">Hide Recommended Videos</label>
-      <input type="checkbox" id="hideRecommendedVideos" class="toggle-switch" aria-label="Hide YouTube Recommended Videos">
-      <span class="toggle-indicator"></span>
+      <label class="setting-text">Hide Recommended Videos</label>
+      <label class="toggle-wrapper">
+        <input type="checkbox" id="hideRecommendedVideos" class="toggle-switch" aria-label="Hide YouTube Recommended Videos">
+        <span class="toggle-indicator"></span>
+      </label>
     </div>
 
     <div class="setting-item">
-      <label for="hideComments">Hide Comments</label>
-      <input type="checkbox" id="hideComments" class="toggle-switch" aria-label="Hide YouTube Comments">
-      <span class="toggle-indicator"></span>
+      <label class="setting-text">Hide Comments</label>
+      <label class="toggle-wrapper">
+        <input type="checkbox" id="hideComments" class="toggle-switch" aria-label="Hide YouTube Comments">
+        <span class="toggle-indicator"></span>
+      </label>
     </div>
 
     <div class="setting-item">
-      <label for="hideAutoplayToggle">Hide Autoplay Toggle</label>
-      <input type="checkbox" id="hideAutoplayToggle" class="toggle-switch" aria-label="Hide YouTube Autoplay Toggle">
-      <span class="toggle-indicator"></span>
+      <label class="setting-text">Hide Autoplay Toggle</label>
+      <label class="toggle-wrapper">
+        <input type="checkbox" id="hideAutoplayToggle" class="toggle-switch" aria-label="Hide YouTube Autoplay Toggle">
+        <span class="toggle-indicator"></span>
+      </label>
     </div>
-    </div> <script src="popup.js"></script>
+
+    <div class="setting-item">
+      <label class="setting-text">Pause Video on Leave</label>
+      <label class="toggle-wrapper">
+        <input type="checkbox" id="pauseOnTabLeave" class="toggle-switch" aria-label="Pause YouTube Video on Tab Leave">
+        <span class="toggle-indicator"></span>
+      </label>
+    </div>
+  </div>
+  <script src="popup.js"></script>
 </body>
 </html>

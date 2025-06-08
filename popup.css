@@ -1,41 +1,52 @@
+/* popup.css - Pitch Black Theme (Adjusted Size & Blue Toggle) */
+
 /* Basic styling for the popup body */
 body {
-  width: 250px; /* Set a fixed width for the popup */
-  padding: 15px; /* Add padding around the content */
-  font-family: 'Roboto', sans-serif; /* Use Roboto font */
-  /* White background with 90% opacity for translucency */
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #000; /* Default text color is black */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  border-radius: 8px; /* Rounded corners for the popup box */
-  border: 1px solid rgba(200, 200, 200, 0.5); /* Subtle border for definition */
-  display: flex; /* Use flexbox to arrange content vertically */
+  width: 250px; /* Slightly smaller width */
+  padding: 18px; /* Slightly less padding */
+  font-family: 'Roboto', sans-serif;
+  background-color: #0d0d0d; /* Very dark charcoal/near black */
+  color: #e0e0e0; /* Light grey for primary text */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Deeper, more noticeable shadow for dark theme */
+  border-radius: 10px; /* Slightly less rounded corners */
+  border: none;
+  display: flex;
   flex-direction: column;
+  transition: all 0.3s ease-in-out;
 }
 
 /* Styling for the main title */
 h1 {
-  font-size: 18px;
-  margin-bottom: 20px; /* Space below the title */
-  color: #000; /* Title color is black */
-  text-align: center; /* Center the title */
+  font-size: 20px; /* Slightly smaller title font */
+  font-weight: 500;
+  margin-bottom: 20px; /* Slightly less space below the title */
+  color: #ffffff; /* Pure white for the title */
+  text-align: center;
 }
 
 /* Container for each individual setting row (label + toggle) */
 .setting-item {
-  display: flex; /* Use flexbox to arrange label and toggle horizontally */
-  align-items: center; /* Vertically align items in the row */
-  justify-content: space-between; /* Distribute space between label and toggle */
-  margin-bottom: 15px; /* Space between setting items */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px; /* Slightly less space between items */
+  padding: 6px 0; /* Slightly less vertical padding */
+  border-bottom: 1px solid #2c2c2c; /* Darker separator line */
 }
 
-/* Styling for the setting labels */
-.setting-item label {
-  font-size: 14px;
-  color: #333; /* Dark grey color for labels */
-  flex-grow: 1; /* Allow the label to take up available space */
-  margin-right: 10px; /* Space between label and the toggle */
-  cursor: pointer; /* Indicate that the label is clickable */
+/* Remove border from the last item */
+.setting-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+/* Styling for the text labels */
+.setting-item .setting-text {
+  font-size: 14px; /* Slightly smaller font for labels */
+  color: #b0b0b0; /* Slightly muted light grey for labels */
+  flex-grow: 1;
+  margin-right: 12px; /* Slightly less space between label and toggle */
+  user-select: none;
 }
 
 /* Hide the default browser checkbox */
@@ -44,36 +55,46 @@ h1 {
 }
 
 /* Styling for the visual toggle indicator (the "track" of the switch) */
-.toggle-indicator {
-  position: relative; /* Needed for positioning the thumb (::before) */
+.toggle-wrapper .toggle-indicator {
+  position: relative;
   display: inline-block;
-  width: 40px; /* Width of the toggle track */
-  height: 20px; /* Height of the toggle track */
-  background-color: #ccc; /* Grey color when toggle is off */
-  border-radius: 20px; /* Make the track rounded */
-  transition: background-color 0.3s ease; /* Smooth transition for background color */
-  cursor: pointer; /* Indicate it's interactive */
+  width: 44px; /* Smaller track width */
+  height: 24px; /* Smaller track height */
+  background-color: #3a3a3a; /* Dark grey when toggle is off */
+  border-radius: 12px; /* Perfect half-circle radius */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3); /* Deeper inner shadow for depth */
 }
 
 /* Styling for the toggle thumb (the "circle" that slides) */
-.toggle-indicator::before {
-  content: ''; /* Required for pseudo-elements */
-  position: absolute; /* Position relative to the toggle-indicator */
-  top: 2px; /* Position the thumb inside the track */
-  left: 2px; /* Position the thumb inside the track */
-  width: 16px; /* Width of the thumb */
-  height: 16px; /* Height of the thumb */
-  background-color: #fff; /* White color for the thumb */
-  border-radius: 50%; /* Make the thumb circular */
-  transition: transform 0.3s ease; /* Smooth sliding effect for the thumb */
+.toggle-wrapper .toggle-indicator::before {
+  content: '';
+  position: absolute;
+  top: 3px; /* Adjust positioning */
+  left: 3px; /* Adjust positioning */
+  width: 18px; /* Smaller thumb */
+  height: 18px; /* Smaller thumb */
+  background-color: #f0f0f0; /* Off-white for the thumb */
+  border-radius: 50%;
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); /* Subtle shadow for the thumb */
 }
 
 /* Style when the associated checkbox is checked (toggle is ON) */
-.toggle-switch:checked + .toggle-indicator {
-  background-color: #10b981; /* Green color when toggle is on */
+.toggle-wrapper input.toggle-switch:checked + .toggle-indicator {
+  background-color: #4285F4; /* Google Blue - a nice vibrant blue */
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(66, 133, 244, 0.3); /* Blue glow effect when active */
 }
 
 /* Move the thumb to the right when the toggle is ON */
-.toggle-switch:checked + .toggle-indicator::before {
-  transform: translateX(20px); /* Move thumb to the right by 20px */
+.toggle-wrapper input.toggle-switch:checked + .toggle-indicator::before {
+  transform: translateX(20px); /* Adjusted based on new dimensions (44 - 18 - 2*3 = 20) */
+  background-color: #ffffff; /* Pure white thumb when active */
+}
+
+/* Focus style for accessibility - when the hidden input is focused, apply style to the indicator */
+.toggle-wrapper input.toggle-switch:focus + .toggle-indicator {
+  outline: none; /* Remove default outline */
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(33, 150, 243, 0.35); /* Focus blue */
 }

@@ -5,122 +5,118 @@ let debounceTimeout;
 
 // --- Helper Functions ---
 
-// Function to hide elements matching a given CSS selector
 function hideElement(selector) {
   const elements = document.querySelectorAll(selector);
   console.log(`Attempting to hide ${selector}: ${elements.length} elements found`);
   elements.forEach(el => {
-    // Hide the element by setting its display style to 'none'
     el.style.display = 'none';
   });
 }
 
-// Function to show elements matching a given CSS selector
 function showElement(selector) {
   const elements = document.querySelectorAll(selector);
   console.log(`Attempting to show ${selector}: ${elements.length} elements found`);
   elements.forEach(el => {
-    // Clear any inline styles that might be hiding the element
     el.style.cssText = '';
-    // Force a reflow to ensure the element is rendered correctly after changing styles
     el.offsetHeight;
   });
 }
 
-// --- Initialization ---
+// --- NEW FEATURE: Pause Video on Tab Leave ---
+function handleVisibilityChange() {
+  // If the setting is enabled AND the document is hidden (tab is not active/visible)
+  if (preferences.pauseOnTabLeave && document.hidden) {
+    // Find the main YouTube video element
+    // The class 'html5-main-video' is often used for the primary video player
+    const videoElement = document.querySelector('.html5-main-video') || document.querySelector('video');
 
-// Log to confirm the content script has been injected and is running
+    if (videoElement && !videoElement.paused) {
+      console.log('Tab hidden, pausing YouTube video.');
+      videoElement.pause();
+    }
+  }
+  // No action on document.visibilityState === 'visible' (we don't auto-play when tab becomes active again)
+}
+
+// Add the visibility change listener once when the content script loads
+document.addEventListener('visibilitychange', handleVisibilityChange);
+// --- END NEW FEATURE ---
+
+
+// --- Initialization ---
 console.log('ZenTube content script initialized on:', window.location.href);
 
-// Apply hiding rules immediately when the script loads based on stored preferences
-chrome.storage.sync.get(['hideHomepageFeed', 'hideRecommendedVideos', 'hideComments', 'hideAutoplayToggle'], function(result) {
-  // Check for errors during storage retrieval
+// Ensure all preferences including the new one are loaded
+chrome.storage.sync.get(['hideHomepageFeed', 'hideRecommendedVideos', 'hideComments', 'hideAutoplayToggle', 'pauseOnTabLeave'], function(result) { // Added 'pauseOnTabLeave'
   if (chrome.runtime.lastError) {
     console.error('Storage error on initial load:', chrome.runtime.lastError);
     return;
   }
-  // Store the retrieved preferences
   preferences = result;
   console.log('Loaded preferences on startup:', preferences);
 
-  // Apply hiding rules based on the loaded preferences
   if (preferences.hideHomepageFeed) {
-    hideElement('#primary ytd-rich-grid-renderer'); // Selector for the homepage feed
+    hideElement('#primary ytd-rich-grid-renderer');
   }
   if (preferences.hideRecommendedVideos) {
-    hideElement('.ytd-watch-next-secondary-results-renderer'); // Selector for recommended videos on watch pages
+    hideElement('.ytd-watch-next-secondary-results-renderer');
   }
   if (preferences.hideComments) {
-    hideElement('#comments'); // Selector for the comments section
+    hideElement('#comments');
   }
   if (preferences.hideAutoplayToggle) {
-    hideElement('.ytp-autonav-toggle-button'); // Selector for the autoplay toggle on the video player
+    hideElement('.ytp-autonav-toggle-button');
   }
+  // No immediate action for pauseOnTabLeave on load, as it reacts to visibility change
 });
 
 // --- Dynamic Hiding with MutationObserver ---
-
-// Debounced function to apply hiding rules.
-// Debouncing prevents the function from running too frequently during rapid DOM changes.
 const debouncedHide = () => {
-  // Re-apply hiding rules based on the current preferences
   if (preferences.hideHomepageFeed) hideElement('#primary ytd-rich-grid-renderer');
   if (preferences.hideRecommendedVideos) hideElement('.ytd-watch-next-secondary-results-renderer');
   if (preferences.hideComments) hideElement('#comments');
   if (preferences.hideAutoplayToggle) hideElement('.ytp-autonav-toggle-button');
+  // pauseOnTabLeave is handled by its own event listener, not by DOM mutations
 };
 
-// Set up a MutationObserver to watch for changes in the DOM
-// This helps hide elements that are loaded dynamically after the initial page load
-const targetNode = document.querySelector('#primary') || document.body; // The element to observe (homepage feed or body)
+const targetNode = document.querySelector('#primary') || document.body;
 const observer = new MutationObserver(() => {
-  // When a mutation is detected, clear any existing debounce timeout
   clearTimeout(debounceTimeout);
-  // Set a new timeout to run the debouncedHide function after a short delay
-  // This groups multiple rapid mutations into a single hiding operation
-  debounceTimeout = setTimeout(debouncedHide, 100); // 100ms debounce delay
+  debounceTimeout = setTimeout(debouncedHide, 100);
 });
-// Start observing the target node for changes in its children or subtree
 observer.observe(targetNode, { childList: true, subtree: true });
 
 // --- Message Listener ---
-
-// Listen for messages sent from other parts of the extension (like the popup script)
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   console.log('Message received in content script:', request);
 
-  // Check if the received message is the 'updatePreferences' action
   if (request.action === 'updatePreferences') {
     console.log('Received updatePreferences message.');
 
-    // Before applying new rules, show all elements that might have been hidden
-    // This ensures that if a setting was turned OFF, the element becomes visible again
+    // Always show elements before reapplying to ensure correct state after preference change
     showElement('#primary ytd-rich-grid-renderer');
     showElement('.ytd-watch-next-secondary-results-renderer');
     showElement('#comments');
     showElement('.ytp-autonav-toggle-button');
 
-    // Retrieve the latest preferences from storage
-    chrome.storage.sync.get(['hideHomepageFeed', 'hideRecommendedVideos', 'hideComments', 'hideAutoplayToggle'], function(result) {
-      // Check for errors during storage retrieval
+    // Make sure to retrieve the new preference when updating
+    chrome.storage.sync.get(['hideHomepageFeed', 'hideRecommendedVideos', 'hideComments', 'hideAutoplayToggle', 'pauseOnTabLeave'], function(result) { // Added 'pauseOnTabLeave'
       if (chrome.runtime.lastError) {
         console.error('Storage error on update:', chrome.runtime.lastError);
-        // Send a response indicating failure
         sendResponse({status: 'Failed to update preferences'});
         return;
       }
-      // Update the cached preferences with the latest data
-      preferences = result;
+      preferences = result; // Update the cached preferences
       console.log('Updated preferences:', preferences);
 
-      // Reapply the hiding rules based on the newly loaded preferences
-      debouncedHide();
+      // Reapply hiding rules based on updated preferences
+      debouncedHide(); // This handles visual hiding rules
 
-      // Send a response back to the sender (the popup script) indicating success
+      // The pauseOnTabLeave logic will automatically react via its event listener
+      // when the document visibility changes, as 'preferences' is now updated.
+
       sendResponse({status: 'Preferences updated successfully'});
     });
-
-    // Return true to indicate that sendResponse will be called asynchronously
-    return true;
+    return true; // Indicate that sendResponse will be called asynchronously
   }
 });
